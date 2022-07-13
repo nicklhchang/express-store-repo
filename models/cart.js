@@ -18,4 +18,4 @@ const CartSchema = new mongoose.Schema(
 );
 
 // attach model to default mongoose connection
-module.exports = mongoose.model('Cart',CartSchema);
+module.exports = mongoose.model('Cart', CartSchema);

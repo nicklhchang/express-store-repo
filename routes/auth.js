@@ -6,8 +6,12 @@ const { register } = require('../controllers/auth');
 
 router.route('/register').post(register);
 
-router.get('/loginStatus', function(req,res) {
-    res.json({ alreadyAuthenticated:req.isAuthenticated() });
+router.get('/login-status', function(req,res) {
+    res.json({ 
+        alreadyAuthenticated:req.isAuthenticated(),
+        // ? means if .user property exists, then access its value
+        user:req?.user
+    });
 })
 
 router.post('/login', passport.authenticate('local',{
@@ -17,11 +21,18 @@ router.post('/login', passport.authenticate('local',{
 
 router.get('/login-success', function(req,res,next) {
     console.log(req);
-    res.json({ loginSuccess:true });
+    res.json({ 
+        loginSuccess:true,
+        // userID:req.session.passport.user,
+        user:req.user
+    });
 })
 
 router.get('/login-failure', function(req,res,next) {
-    res.json({ loginSuccess:false });
+    res.json({ 
+        loginSuccess:false,
+        user:null
+    });
 })
 
 module.exports = router;

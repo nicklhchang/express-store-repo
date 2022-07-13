@@ -13,7 +13,9 @@ const cors = require('cors');
 
 const browseRouter = require('./routes/browse');
 const authRouter = require('./routes/auth');
+const adminRouter = require('./routes/admin');
 
+const { isAuth,isAdmin } = require('./middleware/auth');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
 
@@ -42,7 +44,7 @@ app.use(session({
     }),
     cookie:{
         secure:false, // set to true for prod, testing uses http not https
-        maxAge:1000*30 // 2 hours then, authenticate new session
+        maxAge:1000*20 // 2 hours then, authenticate new session
     }
 }));
 app.use(passport.initialize());
@@ -54,7 +56,8 @@ app.get('/test', function(req,res) {
 });
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/browse', browseRouter);
+app.use('/api/v1/browse', isAuth, browseRouter);
+app.use('/api/v1/admin', isAdmin, adminRouter);
 
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
