@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Item = require('../models/item');
+const Cart = require('../models/cart');
 // isAdmin middleware sits in front of router in app.js so not in here
 
 router.post('/menu-item/create', function(req,res,next) {
@@ -8,7 +9,8 @@ router.post('/menu-item/create', function(req,res,next) {
     let paramsToCreate = {
         name:req.body.name,
         cost:parseInt(req.body.cost),
-        classification:req.body.classification
+        classification:req.body.classification,
+        availability:req.body.availability
     };
     Item.findOne({'name':paramsToCreate.name,'cost':paramsToCreate.cost})
     .exec(function(err,found) {
@@ -40,10 +42,44 @@ router.post('/menu-item/create', function(req,res,next) {
                 requestSuccess:false,
                 user:req.user,
                 // if result is null need to be handled on frontend
-                result:null
+                result:'duplicate'
             });
         }
     });
 });
+
+router.post('/member-cart/create', function(req,res,next) {
+    let paramsToCreate = {
+        member:req.body.member,
+        items:req.body.items
+    }
+    Cart.findOne({'member':paramsToCreate.member})
+    .exec(function(err,found) {
+        if (err) {console.log(err); return next(err);}
+        if (!found) {
+            Cart.create(paramsToCreate)
+            .then(function(newMemberCart) {
+                res.json({
+                    alreadyAuthenticated:true,
+                    requestSuccess:true,
+                    user:req.user,
+                    result:newMemberCart
+                })
+            })
+            .catch(function(error) {
+                console.log(error);
+                return next(error);
+            })
+        } else {
+            res.json({
+                alreadyAuthenticated:true,
+                requestSuccess:false,
+                user:req.user,
+                // if result is null need to be handled on frontend
+                result:'duplicate'
+            });
+        }
+    });
+})
 
 module.exports = router;

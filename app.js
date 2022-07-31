@@ -44,7 +44,8 @@ app.use(session({
     }),
     cookie:{
         secure:false, // set to true for prod, testing uses http not https
-        maxAge:1000*20 // 2 hours then, authenticate new session
+        maxAge:1000*60*1.5, // 2 hours then, authenticate new session,
+        httpOnly:false
     }
 }));
 app.use(passport.initialize());

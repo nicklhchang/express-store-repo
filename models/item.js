@@ -11,8 +11,12 @@ const ItemSchema = new mongoose.Schema({
     },
     classification:{
         type:String,
-        enum:['Appetisers','Small','Medium','Large','Drinks','Desserts'],
-        default:'Appetisers'
+        enum:['Appetiser','Small','Medium','Large','Drink','Dessert'],
+        default:'Appetiser'
+    },
+    availability:{
+        type:Boolean,
+        required:[true,'Please provide availability']
     }
 });
 // can think about doing a ReviewSchema later which ref item and member

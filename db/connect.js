@@ -20,6 +20,7 @@ const connectDB = function() {
         useNewUrlParser:true,
         useUnifiedTopology:true
     });
+    // if use mongoose.createConnection() need to manually attach models to connection
 }
 
 module.exports = {

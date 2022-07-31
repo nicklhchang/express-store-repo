@@ -1,19 +1,34 @@
 const mongoose = require('mongoose');
 
-const CartSchema = new mongoose.Schema(
+const CartItemsSchema = new mongoose.Schema(
     {
-        member:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Member',
-            required:[true,'Please link a member to this cart']
+        item: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Item'
         },
-        items:[{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Item'
-        }]
+        count: {
+            type: Number
+        }
     },
     {
-        timestamps:true
+        _id: false
+    }
+);
+
+const CartSchema = new mongoose.Schema(
+    {
+        member: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Member',
+            required: [true, 'Please link a member to this cart']
+        },
+        items: {
+            type: [CartItemsSchema],
+            required: [false]
+        }
+    },
+    {
+        timestamps: true
     }
 );
 
