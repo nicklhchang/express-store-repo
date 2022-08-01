@@ -9,12 +9,10 @@ router.get('/menu', function (req, res, next) {
     const { types, price } = req.query;
     if (types) { findParams.classification = { $in: types.split(',') } }
     if (price) { findParams.cost = { $lte: parseInt(price) } }
-    console.log(types, findParams)
-
-    for (let i = 0; i < 2500000000; i++) { } // purposefully blocking
+    // console.log(types, findParams)
 
     // mongoose queries are just model.function(); this returns Mongoose Query object
-    // queries are not promises so no mixing async/await or chaining .then()....catch()
+    // queries are not promises. so no mixing async/await or chaining .then()....catch()
     // if callback is passed in exec() or as last parameter.
     // read up on mongoose model api docs but idea is ^ executes query more than once
     Item.find(findParams, 'name cost classification')
@@ -90,8 +88,7 @@ router.post('/cart/sync', function (req, res, next) {
             count: value
         });
     })
-    console.log(arrCart);
-    for (let i = 0; i < 3500000000; i++) { } // purposefully blocking
+    // console.log(arrCart);
     Cart.findOneAndUpdate(
         { member: req.user._id },
         { items: arrCart },
