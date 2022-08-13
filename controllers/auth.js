@@ -30,8 +30,16 @@ const register = async function(req,res,next) {
                 });
             })
             .catch(function(error) {
-                // if using existing but mismatched username and email comes into here
-                res.json({
+                console.log(typeof error, error.errors);
+                error.errors?.email 
+                // if email invalid (mongoose checks and throws err if so)
+                ? res.json({
+                    requestSuccess:true,
+                    loginSuccess:false,
+                    user:'invalid email'
+                })
+                // if using existing but mismatched username and email use here
+                : res.json({
                     requestSuccess:true,
                     loginSuccess:false,
                     user:'duplicate'
