@@ -9,8 +9,12 @@ router.route('/register').post(register);
 router.get('/login-status', function (req, res) {
     res.json({
         alreadyAuthenticated: req.isAuthenticated(),
-        // ? means if req property exists, then access its user property
-        user: req?.user
+        // ? means if user property exists, then access its properties
+        user: {
+            _id: req.user?._id,
+            username: req.user?.username,
+            email: req.user?.email
+        }
     });
 })
 
@@ -20,7 +24,7 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/login-success', function (req, res) {
-    // console.log(req);
+    console.log(req.user, req.session);
     // sessionID: '4zBMIyid4nQiIECaMZ3jjY_C7oRX42X4',
     // session: Session {
     //     cookie: {
@@ -35,7 +39,11 @@ router.get('/login-success', function (req, res) {
     res.json({
         loginSuccess: true,
         // userID:req.session.passport.user,
-        user: req.user
+        user: {
+            _id: req.user._id,
+            username: req.user.username,
+            email: req.user.email
+        }
     });
 })
 
@@ -68,6 +76,7 @@ router.get('/timeout', function (req, res) {
         // divide 60e3 is /(60 * 10^3) to get from ms to mins, or 1e3 get seconds
         const timeUntilExpiry = (expiryDateTime - datetimeNow) / 1e3;
         console.log(timeUntilExpiry)
+
         if (timeUntilExpiry < 60) {
             res.write(`event:almost-timeout\ndata:{"time-left":"${timeUntilExpiry}"}\n\n`)
         } else {
@@ -77,6 +86,7 @@ router.get('/timeout', function (req, res) {
                 res.write('event:almost-timeout\ndata:{"time-left":"60"}\n\n')
             }, ((timeUntilExpiry - 60) * 1000));
         }
+
         // gives 1.5 seconds for frontend to close and display alert message
         // but that means frontend syncs, then after final sync no more
         // like telling user they're unauthenticated earlier than they actually are; just to be safe

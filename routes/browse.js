@@ -17,12 +17,16 @@ router.get('/menu', function (req, res, next) {
     // read up on mongoose model api docs but idea is ^ executes query more than once
     Item.find(findParams, 'name cost classification')
         .exec(function (err, list_items) { // callback already so no need async/await
-            // console.log(list_items)
+            console.log(list_items)
             if (err) { return next(err); }
             res.json({
                 alreadyAuthenticated: true,
                 requestSuccess: true,
-                user: req.user,
+                user: {
+                    _id: req.user._id,
+                    username: req.user.username,
+                    email: req.user.email
+                },
                 result: list_items
             });
         });
@@ -64,7 +68,11 @@ router.get('/cart', async function (req, res, next) {
         res.json({
             alreadyAuthenticated: true,
             requestSuccess: true,
-            user: req.user,
+            user: {
+                _id: req.user._id,
+                username: req.user.username,
+                email: req.user.email
+            },
             result: { cart: member_cart, prices: item_prices }
         });
     } catch (error) {
@@ -117,7 +125,11 @@ router.post('/cart/sync', function (req, res, next) {
             res.json({
                 alreadyAuthenticated: true,
                 requestSuccess: true,
-                user: req.user,
+                user: {
+                    _id: req.user._id,
+                    username: req.user.username,
+                    email: req.user.email
+                },
                 result: raw_updated_cart.value
             })
         });
@@ -132,7 +144,11 @@ router.get('/cart/prices', function(req,res,next) {
         res.json({
             alreadyAuthenticated: true,
             requestSuccess: true,
-            user: req.user,
+            user: {
+                _id: req.user._id,
+                username: req.user.username,
+                email: req.user.email
+            },
             result: costs
         })
     });
